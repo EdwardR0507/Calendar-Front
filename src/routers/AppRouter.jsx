@@ -2,7 +2,7 @@ import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 const AuthRouter = lazy(() => import("./AuthRouter"));
-const Calendar = lazy(() => import("../pages/calendar/Index"));
+const MyCalendar = lazy(() => import("../pages/calendar/Index"));
 
 const AppRouter = () => {
   return (
@@ -10,7 +10,7 @@ const AppRouter = () => {
       <Suspense fallback={<div>Loading...</div>}>
         <Routes>
           <Route path="/auth/*" element={<AuthRouter />} />
-          <Route path="/" element={<Calendar />} />
+          <Route path="/" element={<MyCalendar />} />
           <Route path="*" element={<Navigate to="/auth/login" />} />
         </Routes>
       </Suspense>
