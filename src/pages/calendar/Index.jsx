@@ -1,9 +1,11 @@
-import Navbar from "../ui/Navbar";
+import { useState } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
+import Navbar from "../ui/Navbar";
 import CalendarEvent from "../../components/CalendarEvent";
-import { useState } from "react";
+import CalendarModal from "../../components/CalendarModal";
+
 const localizer = momentLocalizer(moment);
 
 const events = [
@@ -54,6 +56,7 @@ const MyCalendar = () => {
   return (
     <div>
       <Navbar />
+      <CalendarModal />
       <Calendar
         localizer={localizer}
         events={events}
