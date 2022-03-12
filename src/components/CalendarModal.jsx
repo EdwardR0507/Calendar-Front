@@ -1,14 +1,17 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import moment from "moment";
 import ModalLayout from "./ModalLayout";
 import DateTimePicker from "react-datetime-picker";
 import Swal from "sweetalert2";
+import { uiCloseModalAction } from "../actions/ui";
+
 const now = moment().minutes(0).seconds(0).add(1, "hours");
 
 const nowPlusOne = now.clone().add(1, "hours");
 
-const CalendarModal = () => {
-  const [isOpen, setIsOpen] = useState(false);
+const CalendarModal = ({ isOpen }) => {
+  const dispatch = useDispatch();
   const [dateStart, setDateStart] = useState(now.toDate());
   const [dateEnd, setDateEnd] = useState(nowPlusOne.toDate());
   const [formValues, setFormValues] = useState({
@@ -36,7 +39,6 @@ const CalendarModal = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.table(formValues);
     // Validate the dates
     const momentStart = moment(start);
     const momentEnd = moment(end);
@@ -54,76 +56,77 @@ const CalendarModal = () => {
         icon: "error",
       });
     }
+    handleClose();
+  };
+
+  const handleClose = () => {
+    dispatch(uiCloseModalAction());
   };
 
   return (
-    <>
-      <button onClick={() => setIsOpen(true)}>Open Modal</button>
+    <ModalLayout open={isOpen} onClose={handleClose}>
+      <h1 className="text-center"> New Event </h1>
+      <hr />
+      <form className="container" onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label>Start date and time</label>
+          <DateTimePicker
+            onChange={handleStartDateChange}
+            value={dateStart}
+            className="form-control"
+          />
+        </div>
 
-      <ModalLayout open={isOpen} onClose={() => setIsOpen(false)}>
-        <h1 className="text-center"> New Event </h1>
+        <div className="form-group">
+          <label>End date and time</label>
+          <DateTimePicker
+            onChange={handleEndDateChange}
+            minDate={dateStart}
+            value={dateEnd}
+            className="form-control"
+          />
+        </div>
         <hr />
-        <form className="container" onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label>Start date and time</label>
-            <DateTimePicker
-              onChange={handleStartDateChange}
-              value={dateStart}
-              className="form-control"
-            />
-          </div>
+        <div className="form-group">
+          <label>Title and notes</label>
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Event Title"
+            name="title"
+            autoComplete="off"
+            value={title}
+            onChange={handleInputChange}
+          />
+          <small id="emailHelp" className="form-text text-muted">
+            A short description
+          </small>
+        </div>
 
-          <div className="form-group">
-            <label>End date and time</label>
-            <DateTimePicker
-              onChange={handleEndDateChange}
-              minDate={dateStart}
-              value={dateEnd}
-              className="form-control"
-            />
-          </div>
-          <hr />
-          <div className="form-group">
-            <label>Title and notes</label>
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Event Title"
-              name="title"
-              autoComplete="off"
-              value={title}
-              onChange={handleInputChange}
-            />
-            <small id="emailHelp" className="form-text text-muted">
-              A short description
-            </small>
-          </div>
+        <div className="form-group">
+          <textarea
+            type="text"
+            className="form-control"
+            placeholder="Notes"
+            rows="5"
+            name="notes"
+            value={notes}
+            onChange={handleInputChange}
+          ></textarea>
+          <small id="emailHelp" className="form-text text-muted">
+            Additional information
+          </small>
+        </div>
 
-          <div className="form-group">
-            <textarea
-              type="text"
-              className="form-control"
-              placeholder="Notes"
-              rows="5"
-              name="notes"
-              value={notes}
-              onChange={handleInputChange}
-            ></textarea>
-            <small id="emailHelp" className="form-text text-muted">
-              Additional information
-            </small>
-          </div>
-
-          <button
-            type="submit"
-            className="btn btn-outline-primary btn-block w-100 mt-3"
-          >
-            <i className="far fa-save"></i>
-            <span> Save </span>
-          </button>
-        </form>
-      </ModalLayout>
-    </>
+        <button
+          type="submit"
+          className="btn btn-outline-primary btn-block w-100 my-3"
+        >
+          <i className="far fa-save"></i>
+          <span> Save </span>
+        </button>
+      </form>
+    </ModalLayout>
   );
 };
 
