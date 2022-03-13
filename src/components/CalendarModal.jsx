@@ -1,27 +1,40 @@
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import ModalLayout from "./ModalLayout";
 import DateTimePicker from "react-datetime-picker";
 import Swal from "sweetalert2";
 import { uiCloseModalAction } from "../actions/ui";
+import {
+  addEventAction,
+  calendarUpdateEventAction,
+  clearActiveEventAction,
+} from "../actions/calendar";
 
 const now = moment().minutes(0).seconds(0).add(1, "hours");
 
 const nowPlusOne = now.clone().add(1, "hours");
 
-const CalendarModal = ({ isOpen }) => {
+const initEvent = {
+  title: "",
+  notes: "",
+  start: now.toDate(),
+  end: nowPlusOne.toDate(),
+};
+
+const CalendarModal = () => {
   const dispatch = useDispatch();
+  const { isOpen } = useSelector((state) => state.ui);
+  const { activeEvent } = useSelector((state) => state.calendar);
   const [dateStart, setDateStart] = useState(now.toDate());
   const [dateEnd, setDateEnd] = useState(nowPlusOne.toDate());
-  const [formValues, setFormValues] = useState({
-    title: "",
-    notes: "",
-    start: now.toDate(),
-    end: nowPlusOne.toDate(),
-  });
+  const [formValues, setFormValues] = useState(initEvent);
 
   const { title, notes, start, end } = formValues;
+
+  useEffect(() => {
+    activeEvent ? setFormValues(activeEvent) : setFormValues(initEvent);
+  }, [activeEvent]);
 
   const handleStartDateChange = (e) => {
     setFormValues({ ...formValues, start: e });
@@ -56,16 +69,34 @@ const CalendarModal = ({ isOpen }) => {
         icon: "error",
       });
     }
+    if (activeEvent) {
+      dispatch(calendarUpdateEventAction(formValues));
+    } else {
+      dispatch(
+        addEventAction({
+          ...formValues,
+          id: new Date().getTime(), // id temporal
+          user: {
+            _id: "123",
+            name: "Edward",
+          },
+        })
+      );
+    }
     handleClose();
   };
 
   const handleClose = () => {
     dispatch(uiCloseModalAction());
+    dispatch(clearActiveEventAction());
+    setFormValues(initEvent);
   };
 
   return (
     <ModalLayout open={isOpen} onClose={handleClose}>
-      <h1 className="text-center"> New Event </h1>
+      <h1 className="text-center">
+        {!activeEvent ? "New Event" : "Update Event"}{" "}
+      </h1>
       <hr />
       <form className="container" onSubmit={handleSubmit}>
         <div className="form-group">

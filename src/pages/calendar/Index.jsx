@@ -3,28 +3,21 @@ import { useDispatch, useSelector } from "react-redux";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import Navbar from "../ui/Navbar";
+import Navbar from "../../components/Navbar";
 import CalendarEvent from "../../components/CalendarEvent";
 import CalendarModal from "../../components/CalendarModal";
+import AddNewFab from "../../components/AddNewFab";
 import { uiOpenModalAction } from "../../actions/ui";
+import {
+  clearActiveEventAction,
+  setActiveEventAction,
+} from "../../actions/calendar";
+import DeleteEventFab from "../../components/DeleteEventFab";
 
 const localizer = momentLocalizer(moment);
 
-const events = [
-  {
-    title: "All Day Event",
-    allDay: true,
-    start: moment().toDate(),
-    end: moment().add(1, "days").toDate(),
-    user: {
-      _id: "123",
-      name: "Edward",
-    },
-  },
-];
-
 const eventStyleGetter = (event, start, end, isSelected) => {
-  const backgroundColor = "red";
+  const backgroundColor = "#367CF7";
   const style = {
     backgroundColor: backgroundColor,
     borderRadius: "0px",
@@ -39,7 +32,7 @@ const eventStyleGetter = (event, start, end, isSelected) => {
 
 const MyCalendar = () => {
   const dispatch = useDispatch();
-  const { isOpen } = useSelector((state) => state.ui);
+  const { events, activeEvent } = useSelector((state) => state.calendar);
 
   const [lastView, setLastView] = useState(
     localStorage.getItem("lastView") || "month"
@@ -50,7 +43,7 @@ const MyCalendar = () => {
   };
 
   const onSelectEvent = (e) => {
-    console.log(e);
+    dispatch(setActiveEventAction(e));
   };
 
   const onViewChange = (e) => {
@@ -58,25 +51,34 @@ const MyCalendar = () => {
     localStorage.setItem("lastView", e);
   };
 
+  const onSelectSlot = () => {
+    dispatch(clearActiveEventAction());
+  };
+
   return (
     <>
       <Navbar />
-      <CalendarModal isOpen={isOpen} />
+      <CalendarModal />
       <Calendar
         localizer={localizer}
         events={events}
         startAccessor="start"
         endAccessor="end"
         style={{ height: 500 }}
+        selectable={true}
+        onSelectSlot={onSelectSlot}
         eventPropGetter={eventStyleGetter}
         onDoubleClickEvent={onDoubleClick}
         onSelectEvent={onSelectEvent}
+        onSelectedSlot
         onView={onViewChange}
         view={lastView}
         components={{
           event: CalendarEvent,
         }}
       />
+      <AddNewFab />
+      {activeEvent && <DeleteEventFab />}
     </>
   );
 };
