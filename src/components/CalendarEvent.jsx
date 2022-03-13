@@ -7,7 +7,7 @@ const CalendarEvent = ({ event }) => {
   } = event;
 
   return (
-    <div>
+    <div className="d-flex flex-column">
       <strong>{title}</strong>
       <span> - {name}</span>
     </div>
