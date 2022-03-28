@@ -8,7 +8,7 @@ const AuthRouter = () => {
     <Routes>
       <Route path="login" element={<Login />} />
       <Route path="register" element={<Register />} />
-      <Route path="*" element={<Navigate to="/auth/login"></Navigate>} />
+      <Route path="*" element={<Navigate to="/auth/login" />} />
     </Routes>
   );
 };
