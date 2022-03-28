@@ -1,5 +1,5 @@
 import Swal from "sweetalert2";
-import { fetchUnauthorized } from "../helpers/fetch";
+import { fetchToken, fetchUnauthorized } from "../helpers/fetch";
 import { types } from "../types/types";
 
 export const startRegister = (name, email, password) => {
@@ -56,7 +56,7 @@ export const startLogin = (email, password) => {
 
 export const startChecking = () => {
   return async (dispatch) => {
-    const res = await fetchUnauthorized("auth/renew");
+    const res = await fetchToken("auth/renew");
     const response = await res.json();
     if (response.ok) {
       const { uid, name, token } = response;
@@ -69,11 +69,6 @@ export const startChecking = () => {
         })
       );
     } else {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: response.message,
-      });
       dispatch(checkingFinishAction());
     }
   };
