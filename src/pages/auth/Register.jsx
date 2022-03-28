@@ -1,16 +1,28 @@
+import { useDispatch } from "react-redux";
+import Swal from "sweetalert2";
+import { startRegister } from "../../actions/auth";
 import { useForm } from "../../hooks/useForm";
 import "./register.css";
 const Register = () => {
+  const dispatch = useDispatch();
   const [formRegisterValues, handleRegisterInputChange] = useForm({
-    rName: "Nando",
-    rEmail: "nando@gmail.com",
-    rPassword1: "123456",
-    rPassword2: "123456",
+    rName: "",
+    rEmail: "",
+    rPassword1: "",
+    rPassword2: "",
   });
   const { rName, rEmail, rPassword1, rPassword2 } = formRegisterValues;
 
   const handleRegister = (e) => {
     e.preventDefault();
+    if (rPassword1 !== rPassword2) {
+      return Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Passwords do not match",
+      });
+    }
+    dispatch(startRegister(rName, rEmail, rPassword1));
   };
   return (
     <form onSubmit={handleRegister} className="col-md-6 register-form">

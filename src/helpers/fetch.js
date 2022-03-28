@@ -14,3 +14,24 @@ export const fetchUnauthorized = (endpoint, data, method = "GET") => {
     });
   }
 };
+
+export const fetchToken = (endpoint, data, method = "GET") => {
+  const url = `${baseUrl}/${endpoint}`; // localhost:4000/api/...
+  const token = localStorage.getItem("token");
+  if (method === "GET") {
+    return fetch(url, {
+      headers: {
+        Authorization: token,
+      },
+    });
+  } else {
+    return fetch(url, {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token,
+      },
+      body: JSON.stringify(data),
+    });
+  }
+};

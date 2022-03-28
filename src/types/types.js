@@ -11,11 +11,7 @@ export const types = {
   calendarClearActiveEvent: "[calendar] Clear active event",
 
   // Auth
-  authChecking: "[auth] Checking",
-  authChecked: "[auth] Checked",
-  authStartRegister: "[auth] Start register",
-  authStartLogin: "[auth] Start login",
   authLogin: "[auth] Login",
-  authStartTokenRenew: "[auth] Start token renew",
+  authChecked: "[auth] Checked",
   authLogout: "[auth] Logout",
 };
