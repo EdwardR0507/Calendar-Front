@@ -10,6 +10,7 @@ export const types = {
   calendarSetActiveEvent: "[calendar] Set active event",
   calendarClearActiveEvent: "[calendar] Clear active event",
   calendarEventLoaded: "[calendar] Event loaded",
+  calendarClearEvents: "[calendar] Clear events",
 
   // Auth
   authLogin: "[auth] Login",

@@ -3,6 +3,12 @@ import { fetchToken } from "../helpers/fetch";
 import { prepareEvents } from "../helpers/prepareEvents";
 import { types } from "../types/types";
 
+// Add new event
+const addEventAction = (event) => ({
+  type: types.calendarAddEvent,
+  payload: event,
+});
+
 export const startAddEvent = (newEvent) => {
   return async (dispatch, getState) => {
     const { uid, name } = getState().auth;
@@ -23,18 +29,10 @@ export const startAddEvent = (newEvent) => {
   };
 };
 
-const addEventAction = (event) => ({
-  type: types.calendarAddEvent,
+// Calendar update event
+const calendarUpdateEventAction = (event) => ({
+  type: types.calendarUpdateEvent,
   payload: event,
-});
-
-export const setActiveEventAction = (event) => ({
-  type: types.calendarSetActiveEvent,
-  payload: event,
-});
-
-export const clearActiveEventAction = () => ({
-  type: types.calendarClearActiveEvent,
 });
 
 export const startCalendarUpdateEvent = (event) => {
@@ -57,13 +55,38 @@ export const startCalendarUpdateEvent = (event) => {
   };
 };
 
-const calendarUpdateEventAction = (event) => ({
-  type: types.calendarUpdateEvent,
-  payload: event,
+// Calendar delete event
+const calendarDeleteEventAction = () => ({
+  type: types.calendarDeleteEvent,
 });
 
-export const calendarDeleteEventAction = () => ({
-  type: types.calendarDeleteEvent,
+export const startCalendarDeleteEvent = () => {
+  return async (dispatch, getState) => {
+    const {
+      activeEvent: { id },
+    } = getState().calendar;
+    try {
+      const res = await fetchToken(`events/${id}`, {}, "DELETE");
+      const response = await res.json();
+      if (response.ok) {
+        dispatch(calendarDeleteEventAction());
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: response.message,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+
+// Get all events
+const calendarEventLoadedAction = (events) => ({
+  type: types.calendarEventLoaded,
+  payload: events,
 });
 
 export const startEventLoading = () => {
@@ -82,7 +105,16 @@ export const startEventLoading = () => {
   };
 };
 
-const calendarEventLoadedAction = (events) => ({
-  type: types.calendarEventLoaded,
-  payload: events,
+// Actions for calendar
+export const setActiveEventAction = (event) => ({
+  type: types.calendarSetActiveEvent,
+  payload: event,
+});
+
+export const calendarClearEventsAction = () => ({
+  type: types.calendarClearEvents,
+});
+
+export const clearActiveEventAction = () => ({
+  type: types.calendarClearActiveEvent,
 });
