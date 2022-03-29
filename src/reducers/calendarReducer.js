@@ -1,20 +1,7 @@
 import moment from "moment";
 import { types } from "../types/types";
 const initialState = {
-  events: [
-    {
-      id: new Date().getTime(), // Provitional id
-      title: "All Day Event",
-      start: moment().toDate(),
-      end: moment().add(1, "days").toDate(),
-      bgColor: "#fafafa",
-      notes: "This is a note",
-      user: {
-        _id: "123",
-        name: "Edward",
-      },
-    },
-  ],
+  events: [],
   activeEvent: null,
 };
 
@@ -51,6 +38,11 @@ export const calendarReducer = (state = initialState, action) => {
           (event) => event.id !== state.activeEvent.id
         ),
         activeEvent: null,
+      };
+    case types.calendarEventLoaded:
+      return {
+        ...state,
+        events: [...payload],
       };
     default:
       return state;

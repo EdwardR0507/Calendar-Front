@@ -7,7 +7,7 @@ import Swal from "sweetalert2";
 import { uiCloseModalAction } from "../actions/ui";
 import {
   startAddEvent,
-  calendarUpdateEventAction,
+  startCalendarUpdateEvent,
   clearActiveEventAction,
 } from "../actions/calendar";
 
@@ -70,7 +70,7 @@ const CalendarModal = () => {
       });
     }
     if (activeEvent) {
-      dispatch(calendarUpdateEventAction(formValues));
+      dispatch(startCalendarUpdateEvent(formValues));
     } else {
       dispatch(startAddEvent(formValues));
     }
